@@ -1,4 +1,6 @@
 .Rproj.user
-data/
 .Rhistory
 .RData
+
+data/
+rsconnect/
