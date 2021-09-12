@@ -31,49 +31,71 @@ find_places <- function(timeline_data) {
     transmute(
       place_name = name,
       place_type = semanticType,
+      lat = latitudeE7 / 1e7,
+      lon = longitudeE7 / 1e7,
+      tz = find_tz(lat, lon),
       came = parse_timestamp(startTimestampMs),
       left = parse_timestamp(endTimestampMs),
-      hours = diff_hours(came, left)
+      hours = hours_stayed(came, left)
     )
+}
+
+find_tz <- function(lat, lon) {
+  lutz::tz_lookup_coords(lat, lon, method = "fast", warn = FALSE)
 }
 
 parse_timestamp <- function(x) {
   vctrs::new_datetime(as.double(x) / 1000)
 }
 
-diff_hours <- function(start, end) {
+hours_stayed <- function(start, end) {
   as.double(difftime(end, start, units = "hours"))
 }
 
 
-summarise_work_days <- function(places) {
-  work_visits <- places %>%
-    filter(place_type == "TYPE_WORK")
-
-  work_visits %>%
+summarise_daily_hours <- function(places) {
+  places %>%
     group_by(day = as.Date(came), .add = TRUE) %>%
     summarise(
+      tz = first(tz),
       came = first(came),
       left = last(left),
-      hours = diff_hours(came, left)
+      hours = hours_stayed(came, left)
     )
 }
 
-format_work_days <- function(data) {
+format_daily_hours <- function(data) {
   data %>%
+    rowwise() %>%
     transmute(
-      # week = strftime(day, "%V"),
-      day = strftime(day, "%A, %d %B"),
-      across(c(came, left), strftime, "%R"),
+      day = strftime(day, "%A, %d %B", tz = tz),
+      came = strftime(came, "%R", tz = tz),
+      left = strftime(left, "%R", tz = tz),
       hours = round(hours, 2)
     )
 }
 
-summarise_work_time <- function(places) {
-  summarise_work_days(places) %>%
+summarise_total_hours <- function(places) {
+  summarise_daily_hours(places) %>%
     summarise(
       total_days = n(),
       total_hours = sum(hours),
       average_hours = total_hours / total_days
     )
+}
+
+
+tz_choices <- function() {
+  zones <- clock::tzdb_names()
+  offset <- tz_offset(zones)
+  names(zones) <- sprintf("UTC%s (%s)", format_offset(offset), zones)
+  zones[order(offset)]
+}
+
+tz_offset <- function(tzone, time = clock::sys_time_now()) {
+  as.double(clock::sys_time_info(clock::as_sys_time(time), tzone)$offset)
+}
+
+format_offset <- function(x) {
+  sprintf("%+03d:%02d", x %/% 3600, x %% 3600 %/% 60)
 }

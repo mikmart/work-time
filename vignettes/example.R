@@ -9,5 +9,8 @@ timeline_data <- jsonlite::fromJSON(unz(zip_file, data_file))
 
 places <- find_places(timeline_data)
 
-summarise_work_days(places)
-summarise_work_time(places)
+work_visits <- places %>%
+  filter(place_type == "TYPE_WORK")
+
+summarise_daily_hours(work_visits) |> format_daily_hours()
+summarise_total_hours(work_visits)
