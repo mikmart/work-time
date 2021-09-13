@@ -18,4 +18,4 @@ To keep file size down, make sure to only include your location history in the T
 
 ### Code
 
-View the source code for this application at: https://github.com/mikmart/work-time/.
+View the source code for this application [on GitHub](https://github.com/mikmart/work-time/).

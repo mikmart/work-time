@@ -13,3 +13,4 @@ Imports:
   stringr,
   tidyr,
   vctrs  
+License: MIT + file LICENSE
