@@ -1,4 +1,4 @@
-### About
+# A Shiny app to track time spent at work
 
 Summarize your time spent at work based on your location history data that Google collects.
 
@@ -8,14 +8,11 @@ This app lets you find out with daily and monthly summaries of your time spent a
 in Google Maps. You can download the summary and use it,
 for example, to help you fill your timesheet.
 
+See the app live here: https://mikmart.shinyapps.io/work-time/
 
-### Usage
+
+## Usage
 
 Export your location history in JSON format using Google Takeout (https://takeout.google.com/), and upload the generated zip file.
 
 To keep file size down, make sure to only include your location history in the Takeout.
-
-
-### Code
-
-View the source code for this application at: https://github.com/mikmart/work-time/.
