@@ -2,6 +2,13 @@ library(shiny)
 
 source(here::here("R/functions.R"))
 
+# Make sure shinyapps.io environment is set up properly
+Sys.setlocale("LC_ALL", "C")
+
+# Allow uploads up to 100 MB
+options(shiny.maxRequestSize = 100 * 1024 ^ 2)
+
+
 tzInput <- function() {
   tagList(
     radioButtons(
@@ -23,9 +30,6 @@ tzInput <- function() {
     ),
   )
 }
-
-# Allow uploads up to 100 MB
-options(shiny.maxRequestSize = 100 * 1024 ^ 2)
 
 ui <- fluidPage(
   shinyjs::useShinyjs(),
