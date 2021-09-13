@@ -1,0 +1,15 @@
+Package: shinyapp
+Imports:
+  clock,
+  dplyr,
+  here,
+  jsonlite,
+  lutz,
+  markdown,
+  readr,
+  shiny,
+  shinyBS,
+  shinyjs,
+  stringr,
+  tidyr,
+  vctrs  
